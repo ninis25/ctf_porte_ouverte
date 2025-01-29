@@ -1,26 +1,18 @@
 # Image de base Node.js
 FROM node:18-alpine
 
-# Installer les dépendances nécessaires
+# Installer les dépendances système
 RUN apk add --no-cache \
     python3 \
+    py3-pillow \
     py3-pip \
     make \
     g++ \
     jpeg-dev \
-    zlib-dev \
-    freetype-dev \
-    lcms2-dev \
-    openjpeg-dev \
-    tiff-dev \
-    tk-dev \
-    tcl-dev \
-    harfbuzz-dev \
-    fribidi-dev
+    zlib-dev
 
-# Installer les dépendances Python avec les options de compilation nécessaires
-RUN python3 -m pip install --upgrade pip && \
-    python3 -m pip install --no-cache-dir Pillow piexif
+# Installer piexif séparément
+RUN pip3 install --no-cache-dir piexif
 
 # Créer le répertoire de l'application
 WORKDIR /app
@@ -28,12 +20,15 @@ WORKDIR /app
 # Copier les fichiers package.json et package-lock.json
 COPY package*.json ./
 
-# Installer les dépendances avec une configuration plus sûre
+# Installer les dépendances Node.js
 RUN npm install --production --silent && \
     npm cache clean --force
 
 # Copier le reste des fichiers de l'application
 COPY . .
+
+# Créer le dossier images s'il n'existe pas
+RUN mkdir -p public/images
 
 # Générer l'image du challenge 2
 RUN python3 scripts/generate_challenge2_image.py
