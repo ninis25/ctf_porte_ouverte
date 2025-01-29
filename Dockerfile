@@ -1,4 +1,20 @@
-# Image de base Node.js
+# Image de base Python pour générer l'image
+FROM python:3.9-slim as builder
+
+# Installer les dépendances Python
+RUN pip install --no-cache-dir Pillow piexif
+
+# Copier le script de génération
+COPY scripts/generate_challenge2_image.py /app/
+WORKDIR /app
+
+# Créer le dossier pour l'image
+RUN mkdir -p public/images
+
+# Générer l'image
+RUN python generate_challenge2_image.py
+
+# Image finale Node.js
 FROM node:18-alpine
 
 # Installer les dépendances système
@@ -33,6 +49,9 @@ RUN npm install --production --silent && \
 
 # Copier le reste des fichiers de l'application
 COPY . .
+
+# Copier l'image générée depuis le builder
+COPY --from=builder /app/public/images/challenge2.jpg public/images/
 
 # Créer le dossier images s'il n'existe pas
 RUN mkdir -p public/images && \
