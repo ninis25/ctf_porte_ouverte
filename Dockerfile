@@ -4,6 +4,12 @@ FROM node:18-alpine
 # Installer les dépendances nécessaires
 RUN apk add --no-cache python3 make g++
 
+# Installer Python et pip
+RUN apk add --no-cache python3 py3-pip
+
+# Installer les dépendances Python
+RUN pip3 install Pillow piexif
+
 # Créer le répertoire de l'application
 WORKDIR /app
 
@@ -16,6 +22,9 @@ RUN npm install --production --silent && \
 
 # Copier le reste des fichiers de l'application
 COPY . .
+
+# Générer l'image du challenge 2
+RUN python3 scripts/generate_challenge2_image.py
 
 # Définir les variables d'environnement
 ENV NODE_ENV=production
