@@ -2,13 +2,25 @@
 FROM node:18-alpine
 
 # Installer les dépendances nécessaires
-RUN apk add --no-cache python3 make g++
+RUN apk add --no-cache \
+    python3 \
+    py3-pip \
+    make \
+    g++ \
+    jpeg-dev \
+    zlib-dev \
+    freetype-dev \
+    lcms2-dev \
+    openjpeg-dev \
+    tiff-dev \
+    tk-dev \
+    tcl-dev \
+    harfbuzz-dev \
+    fribidi-dev
 
-# Installer Python et pip
-RUN apk add --no-cache python3 py3-pip
-
-# Installer les dépendances Python
-RUN pip3 install Pillow piexif
+# Installer les dépendances Python avec les options de compilation nécessaires
+RUN python3 -m pip install --upgrade pip && \
+    python3 -m pip install --no-cache-dir Pillow piexif
 
 # Créer le répertoire de l'application
 WORKDIR /app
