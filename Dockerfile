@@ -11,8 +11,15 @@ RUN apk add --no-cache \
     jpeg-dev \
     zlib-dev
 
-# Installer piexif séparément
-RUN pip3 install --no-cache-dir piexif
+# Créer un utilisateur non-root pour pip
+RUN adduser -D pythonuser
+
+# Installer piexif en tant qu'utilisateur non-root
+USER pythonuser
+RUN pip3 install --user --no-cache-dir piexif
+
+# Revenir à l'utilisateur root pour la suite
+USER root
 
 # Créer le répertoire de l'application
 WORKDIR /app
@@ -28,10 +35,15 @@ RUN npm install --production --silent && \
 COPY . .
 
 # Créer le dossier images s'il n'existe pas
-RUN mkdir -p public/images
+RUN mkdir -p public/images && \
+    chown -R pythonuser:pythonuser public/images
 
-# Générer l'image du challenge 2
-RUN python3 scripts/generate_challenge2_image.py
+# Générer l'image du challenge 2 en tant qu'utilisateur non-root
+USER pythonuser
+RUN PYTHONPATH=/home/pythonuser/.local/lib/python3.11/site-packages python3 scripts/generate_challenge2_image.py
+
+# Revenir à root pour le démarrage
+USER root
 
 # Définir les variables d'environnement
 ENV NODE_ENV=production
