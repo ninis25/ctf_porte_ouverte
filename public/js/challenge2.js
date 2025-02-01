@@ -184,7 +184,7 @@ function submitFlag(event) {
     const flagInput = document.getElementById('flagInput');
     const userFlag = flagInput.value.trim().toUpperCase();
     const submittedFlag = userFlag.startsWith('FLAG{') ? userFlag : `FLAG{${userFlag}}`;
-    const correctFlag = 'FLAG{HIDDEN_EXIF}';
+    const correctFlag = 'FLAG{IMAGE_SECRETE}';
 
     const resultMessage = document.getElementById('result-message');
 
