@@ -1,6 +1,5 @@
 # 🎯 CTF IUT Nord Franche-Comté - R&T
 
-![Banner](docs/images/banner.png)
 
 Un CTF (Capture The Flag) éducatif pour découvrir la cybersécurité de manière ludique.
 
